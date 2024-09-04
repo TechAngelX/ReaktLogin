@@ -1,7 +1,8 @@
 const oracledb = require('oracledb');
+const configPath = require('../config/configPath'); // in hidden //gitignored /config file locally.
 
 // Load environment variables from the .env_reactlogin file
-require('dotenv').config({ path: '/Users/xeon2035/Documents/LOCALDEV/CONFIG_ENVS/node/.env_reactlogin' });
+require('dotenv').config({ path: configPath.envPath });
 
 // Confirm that environment variables are being loaded correctly
 console.log('DB_USER:', process.env.DB_USER);
@@ -11,7 +12,7 @@ console.log('DB_CONNECT_STRING:', process.env.DB_CONNECT_STRING);
 const dbConfig = {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    connectString: process.env.DB_CONNECT_STRING  // Use the connection string directly from .env
+    connectString: process.env.DB_CONNECT_STRING // Use the connection string directly from .env
 };
 
 console.log('Database configuration:', dbConfig); // Verify the configuration

@@ -2,10 +2,11 @@ const express = require('express');
 const oracledb = require('oracledb');
 const cors = require('cors');
 const path = require('path');
+const configPath = require('../config/configPath'); // Import the configPath module
 const app = express();
 
-// Load environment variables from .env_reactlogin
-require('dotenv').config({ path: '/Users/xeon2035/Documents/LOCALDEV/CONFIG_ENVS/node/.env_reactlogin' });
+// Load environment variables from .env_reactlogin using the path from configPath
+require('dotenv').config({ path: configPath.envPath });
 
 // Configure database connection using environment variables
 const dbConfig = {
