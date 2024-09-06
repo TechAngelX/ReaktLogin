@@ -20,12 +20,17 @@ const Login = ({ onLogin }) => {
             if (response.ok) {
                 onLogin(); // Call onLogin if login is successful
             } else {
-                setError(result.message); // Display error message if login fails
+                if (result.message === 'Invalid username or password') {
+                    setError('Invalid username or password. Please try again.');
+                } else {
+                    setError(result.message || 'An error occurred. Please try again.');
+                }
             }
         } catch (error) {
             console.error('Error during login:', error);
             setError('An error occurred. Please try again.');
         }
+
     };
 
     return (

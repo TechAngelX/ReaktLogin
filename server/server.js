@@ -3,6 +3,7 @@ const oracledb = require('oracledb');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+const bcrypt = require('bcrypt');
 const configPath = require('../config/configPath'); // Import the configPath module
 
 const app = express();
@@ -49,17 +50,28 @@ app.post('/api/login', async (req, res) => {
 
     try {
         connection = await oracledb.getConnection(dbConfig);
-
         console.log("Successfully connected to the database with config:", dbConfig);
 
+        // Actual login query
         const result = await connection.execute(
-            `SELECT * FROM USER_ACC WHERE USERNAME = :username AND PWORD = :password`,
-            [username, password],
+            `SELECT PWORD FROM USER_ACC WHERE USERNAME = :username`,
+            [username],
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
 
+        console.log("Actual query result:", result);
+
         if (result.rows.length > 0) {
-            res.status(200).json({ message: 'Login successful' });
+            const hashedPassword = result.rows[0].PWORD;
+
+            // Compare the plain password with the hashed password
+            const isMatch = await bcrypt.compare(password, hashedPassword);
+
+            if (isMatch) {
+                res.status(200).json({ message: 'Login successful' });
+            } else {
+                res.status(401).json({ message: 'Invalid username or password' });
+            }
         } else {
             res.status(401).json({ message: 'Invalid username or password' });
         }
@@ -84,11 +96,9 @@ app.get('/api/data', async (req, res) => {
 
     try {
         connection = await oracledb.getConnection(dbConfig);
-
         console.log("Successfully connected to the database with config:", dbConfig);
 
         const result = await connection.execute('SELECT * FROM USER_ACC');
-
         res.json(result.rows);
     } catch (err) {
         console.error('Error connecting to the database:', err);
