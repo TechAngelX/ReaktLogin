@@ -20,6 +20,24 @@ A full-stack login and registration application built to showcase my skills in w
 
 This project demonstrates my ability to build a complete full-stack application, manage database interactions, and implement best practices in React and Node.js development.
 
+## 🛠️ Usage
+
+### Configuration
+
+Create a `configPath.js` file in the `/config` directory with the following content:
+
+```javascript
+const path = require('path');
+
+// 2. Define the absolute path to the .env file
+const envPath = path.resolve('/your/local/projectfolder/config/.env');
+
+// Export the path
+module.exports = {
+    envPath
+};
+
+```
 ## 📄 License
 
 Licensed under the **GNU General Public License v3.0**.

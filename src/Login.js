@@ -29,28 +29,51 @@ const Login = ({ onLogin }) => {
     };
 
     return (
-        <div>
-            <h2>Login</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Username:</label>
-                    <input
-                        type="text"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <label>Password:</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                </div>
-                <button type="submit">Login</button>
-                {error && <p style={{ color: 'red' }}>{error}</p>}
-            </form>
+        <div className="container form-container">
+            <div className="form-box">
+                <h1 className="text-center"><b>Login</b></h1>
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label htmlFor="username"><strong>Username:</strong></label>
+                        <input
+                            className="form-control"
+                            type="text"
+                            name="username"
+                            id="username"
+                            required
+                            placeholder="Enter your username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="password"><strong>Password:</strong></label>
+                        <input
+                            className="form-control"
+                            type="password"
+                            name="password"
+                            id="password"
+                            required
+                            placeholder="Enter your password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </div>
+
+                    {error && (
+                        <div className="form-group">
+                            <p className="text-danger">{error}</p>
+                        </div>
+                    )}
+
+                    <button className="btn btn-primary btn-block" type="submit">Login</button>
+                </form>
+
+                <p className="text-center mt-3">
+                    <a href="/register">Don't have an account? Register here</a>
+                </p>
+            </div>
         </div>
     );
 };

@@ -2,20 +2,36 @@ const express = require('express');
 const oracledb = require('oracledb');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 const configPath = require('../config/configPath'); // Import the configPath module
+
 const app = express();
 
-// Load environment variables from .env_reactlogin using the path from configPath
-require('dotenv').config({ path: configPath.envPath });
+// Load environment variables from the file specified in configPath
+const envFilePath = configPath.envPath;
+if (fs.existsSync(envFilePath)) {
+    require('dotenv').config({ path: envFilePath });
+} else {
+    console.error('Environment file not found:', envFilePath);
+    process.exit(1);
+}
+
+// Log environment variables for debugging
+console.log("Env file path: " + envFilePath);
+console.log("Database User: " + process.env.DB_USER);
+console.log("Database Password: " + process.env.DB_PASSWORD);
+console.log("Database Connect String: " + process.env.DB_CONNECT_STRING);
+console.log("Server Port: " + (process.env.PORT || 5503));
 
 // Configure database connection using environment variables
 const dbConfig = {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    connectString: process.env.DB_SERVER + '/' + process.env.DB_DATABASE
+    connectString: process.env.DB_CONNECT_STRING
 };
 
-const PORT = process.env.PORT || 5503; // Use the PORT from environment variables or default to 5503
+// Use the PORT from environment variables or default to 5503
+const PORT = process.env.PORT || 5503;
 
 // Middleware
 app.use(cors());
@@ -29,8 +45,12 @@ app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
     let connection;
 
+    console.log("Login request received. Username: " + username);
+
     try {
         connection = await oracledb.getConnection(dbConfig);
+
+        console.log("Successfully connected to the database with config:", dbConfig);
 
         const result = await connection.execute(
             `SELECT * FROM USER_ACC WHERE USERNAME = :username AND PWORD = :password`,
@@ -50,6 +70,7 @@ app.post('/api/login', async (req, res) => {
         if (connection) {
             try {
                 await connection.close();
+                console.log("Database connection closed.");
             } catch (err) {
                 console.error('Error closing the database connection:', err);
             }
@@ -64,6 +85,8 @@ app.get('/api/data', async (req, res) => {
     try {
         connection = await oracledb.getConnection(dbConfig);
 
+        console.log("Successfully connected to the database with config:", dbConfig);
+
         const result = await connection.execute('SELECT * FROM USER_ACC');
 
         res.json(result.rows);
@@ -74,6 +97,7 @@ app.get('/api/data', async (req, res) => {
         if (connection) {
             try {
                 await connection.close();
+                console.log("Database connection closed.");
             } catch (err) {
                 console.error('Error closing the database connection:', err);
             }
