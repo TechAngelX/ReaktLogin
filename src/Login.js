@@ -28,7 +28,7 @@ const Login = ({ onLogin }) => {
                 setError(data.message || 'Invalid username or password');
             }
         } catch (err) {
-            setError('NOW WHAT DA FUCK@ error');
+            setError('Error Occurred. Data not sent to database.');
             console.error('Login error:', err);
         }
     };
