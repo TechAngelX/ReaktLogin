@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App'; // This should match the default export from App.js
+import './App.css'; // Import App.css if you need it
+import App from './App'; // Ensure this path is correct
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './App.css'; // Assuming you want to use App.css for styling
 
 const Login = ({ onLogin }) => {
     const [username, setUsername] = useState('');
@@ -9,76 +10,56 @@ const Login = ({ onLogin }) => {
         e.preventDefault();
 
         try {
-            const response = await fetch('/api/login', {
+            const response = await fetch('http://localhost:5503/api/login', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password }),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username,
+                    password
+                }),
             });
 
-            const result = await response.json();
-
             if (response.ok) {
-                onLogin(); // Call onLogin if login is successful
+                onLogin(); // Notify parent component of successful login
             } else {
-                if (result.message === 'Invalid username or password') {
-                    setError('Invalid username or password. Please try again.');
-                } else {
-                    setError(result.message || 'An error occurred. Please try again.');
-                }
+                const data = await response.json();
+                setError(data.message || 'Invalid username or password');
             }
-        } catch (error) {
-            console.error('Error during login:', error);
+        } catch (err) {
             setError('NOW WHAT DA FUCK@ error');
+            console.error('Login error:', err);
         }
-
     };
 
     return (
-        <div className="container form-container">
-            <div className="form-box">
-                <h1 className="text-center"><b>Login</b></h1>
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label htmlFor="username"><strong>Username:</strong></label>
-                        <input
-                            className="form-control"
-                            type="text"
-                            name="username"
-                            id="username"
-                            required
-                            placeholder="Enter your username"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="password"><strong>Password:</strong></label>
-                        <input
-                            className="form-control"
-                            type="password"
-                            name="password"
-                            id="password"
-                            required
-                            placeholder="Enter your password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                    </div>
-
-                    {error && (
-                        <div className="form-group">
-                            <p className="text-danger">{error}</p>
-                        </div>
-                    )}
-
-                    <button className="btn btn-primary btn-block" type="submit">Login</button>
-                </form>
-
-                <p className="text-center mt-3">
-                    <a href="/register">Don't have an account? Register here</a>
-                </p>
-            </div>
+        <div className="login-container">
+            <h2>Login</h2>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label htmlFor="username">Username:</label>
+                    <input
+                        type="text"
+                        id="username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        required
+                    />
+                </div>
+                <div>
+                    <label htmlFor="password">Password:</label>
+                    <input
+                        type="password"
+                        id="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                </div>
+                <button type="submit">Login</button>
+                {error && <p className="error">{error}</p>}
+            </form>
         </div>
     );
 };
