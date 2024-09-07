@@ -39,7 +39,7 @@ app.use(cors());
 app.use(express.json());
 
 // Serve static files from the React app
-app.use(express.static(path.join(__dirname, '../build')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Login Route
 app.post('/api/login', async (req, res) => {
@@ -118,7 +118,7 @@ app.get('/api/data', async (req, res) => {
 
 // Catch-all handler for any request that doesn't match the above routes
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../build/index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Start the server
