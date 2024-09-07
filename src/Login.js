@@ -28,7 +28,7 @@ const Login = ({ onLogin }) => {
             }
         } catch (error) {
             console.error('Error during login:', error);
-            setError('An error occurred. Please try again.');
+            setError('NOW WHAT DA FUCK@ error');
         }
 
     };

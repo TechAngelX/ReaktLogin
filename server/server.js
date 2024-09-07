@@ -43,6 +43,7 @@ app.use(express.static(path.join(__dirname, '../build')));
 
 // Login Route
 app.post('/api/login', async (req, res) => {
+    console.log("Received login request:", req.body);
     const { username, password } = req.body;
     let connection;
 
