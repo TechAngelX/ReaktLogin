@@ -1,18 +1,16 @@
 {
-  "name": "client",
+  "name": "backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Backend server for handling API requests",
+  "main": "server.js",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "node server.js"
   },
-  "proxy": "http://localhost:5503",
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1"
+    "express": "^4.17.1",
+    "oracledb": "6.6.0",
+    "cors": "2.8.5",
+    "bcrypt": "5.0.1",
+    "dotenv": "16.0.0"
   }
 }
