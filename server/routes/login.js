@@ -12,11 +12,19 @@ const dbConfig = {
 };
 
 router.post('/', async (req, res) => {
-    console.log("Received login request:", req.body);
+    console.log("---------------------------------------------------------------- ");
+    console.log("Login request received:", req.body);
     const { username, password } = req.body;
+    console.log("---------------------------------------------------------------- ");
+
+
+
+
+
+
+
     let connection;
 
-    console.log("Login request received. Username: " + username);
 
     try {
         connection = await oracledb.getConnection(dbConfig);
@@ -40,10 +48,10 @@ router.post('/', async (req, res) => {
             if (isMatch) {
                 res.status(200).json({ message: 'Login successful' });
             } else {
-                res.status(401).json({ message: 'Invalid username or password' });
+                res.status(401).json({ message: 'Username or password incorrect.' });
             }
         } else {
-            res.status(401).json({ message: 'Invalid username or password' });
+            res.status(401).json({ message: 'Username or password incorrect.' });
         }
     } catch (error) {
         console.error('Error connecting to the database:', error);
