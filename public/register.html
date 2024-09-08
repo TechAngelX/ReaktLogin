@@ -105,99 +105,21 @@
                 <p id="dept-error" class="text-danger"></p>
             </div>
 
-            <input type="hidden" id="progid" name="progid">
-            <input type="hidden" id="studylevelid" name="studylevelid">
-            <input type="hidden" id="degreetypeid" name="degreetypeid">
-            <input type="hidden" id="deptid" name="deptid">
-            <input type="hidden" id="staffroleid" name="staffroleid">
-
-            <button type="submit" class="btn btn-primary btn-block">Register</button>
+            <div class="form-group text-center">
+                <button class="btn btn-primary" type="submit">Register</button>
+            </div>
         </form>
     </div>
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const accTypeSelect = document.getElementById("accType");
-        const awardGroup = document.getElementById("award-group");
-        const programmeGroup = document.getElementById("programme-group");
-        const staffRoleGroup = document.getElementById("staffrole-group");
-        const deptGroup = document.getElementById("dept-group");
-        const awardSelect = document.getElementById("award");
-        const programmeSelect = document.getElementById("programme");
-        const staffRoleSelect = document.getElementById("staffrole");
-        const deptSelect = document.getElementById("dept");
-
-        // Hidden input fields
-        const progIdInput = document.getElementById("progid");
-        const studyLevelIdInput = document.getElementById("studylevelid");
-        const degreeTypeIdInput = document.getElementById("degreetypeid");
-        const deptIdInput = document.getElementById("deptid");
-        const staffRoleIdInput = document.getElementById("staffroleid");
-
-        // Handle account type changes
-        accTypeSelect.addEventListener("change", function() {
-            if (accTypeSelect.value === "1") { // Student selected
-                awardGroup.style.display = "block";
-                programmeGroup.style.display = "block";
-                staffRoleGroup.style.display = "none";
-                deptGroup.style.display = "none";
-            } else if (accTypeSelect.value === "2") { // Staff selected
-                awardGroup.style.display = "none";
-                programmeGroup.style.display = "none";
-                staffRoleGroup.style.display = "block";
-                deptGroup.style.display = "block";
-            } else {
-                awardGroup.style.display = "none";
-                programmeGroup.style.display = "none";
-                staffRoleGroup.style.display = "none";
-                deptGroup.style.display = "none";
-            }
-        });
-
-        // Fetch student choices
-        fetch("/api/studentChoices")
-            .then(response => response.json())
-            .then(data => {
-                const choices = {};
-                data.forEach(choice => {
-                    if (!choices[choice.AWARDNAME]) {
-                        choices[choice.AWARDNAME] = [];
-                    }
-                    choices[choice.AWARDNAME].push(choice);
-                });
-
-                // Populate awards dropdown
-                awardSelect.innerHTML = '<option value="">Select Award</option>';
-                Object.keys(choices).forEach(award => {
-                    const option = document.createElement('option');
-                    option.value = award;
-                    option.textContent = award;
-                    awardSelect.appendChild(option);
-                });
-
-                // Update programmes based on selected award
-                awardSelect.addEventListener("change", function() {
-                    const selectedAward = this.value;
-                    programmeSelect.innerHTML = '<option value="">Select Programme</option>';
-                    if (choices[selectedAward]) {
-                        choices[selectedAward].forEach(programme => {
-                            const option = document.createElement('option');
-                            option.value = programme.PROGID;
-                            option.textContent = programme.PROGNAME;
-                            programmeSelect.appendChild(option);
-                        });
-                    }
-                });
-
-                // Set hidden fields based on selected programme
-                programmeSelect.addEventListener("change", function() {
-                    const selectedProgId = this.value;
-                    const selectedChoice = data.find(choice => choice.PROGID === selectedProgId);
-                    if (selectedChoice) {
-                        progIdInput.value = selectedChoice.PROGID;
-                        studyLevelIdInput.value = selectedChoice.STUDYLEVELID;
-                        degreeTypeIdInput.value = selectedChoice.DEGREETYPEID;
-                        deptIdInput.value = selectedChoice.DEPTID;
-                    } else {
-
+    document.getElementById('accType').addEventListener('change', function() {
+        const selectedType = this.value;
+        document.getElementById('award-group').style.display = (selectedType === '1') ? 'block' : 'none';
+        document.getElementById('programme-group').style.display = (selectedType === '1') ? 'block' : 'none';
+        document.getElementById('staffrole-group').style.display = (selectedType === '2') ? 'block' : 'none';
+        document.getElementById('dept-group').style.display = (selectedType === '2') ? 'block' : 'none';
+    });
+</script>
+</body>
+</html>

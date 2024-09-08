@@ -15,7 +15,6 @@ router.post('/', async (req, res) => {
     console.log("---------------------------------------------------------------- ");
     console.log("Login request received:", req.body);
     const { username, password } = req.body;
-    console.log("---------------------------------------------------------------- ");
 
 
 

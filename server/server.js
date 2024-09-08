@@ -16,6 +16,7 @@ if (fs.existsSync(envFilePath)) {
     process.exit(1);
 }
 
+
 // Log environment variables for debugging
 console.log("Env file path: " + envFilePath);
 console.log("Database User: " + process.env.DB_USER);
