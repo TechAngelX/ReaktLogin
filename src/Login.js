@@ -28,7 +28,7 @@ const Login = ({ onLogin }) => {
                 setError(data.message || 'Invalid username or password');
             }
         } catch (err) {
-            setError('Error Occurred. Data not sent to database.');
+            setError('Error occurred. Data not sent to database.');
             console.error('Login error:', err);
         }
     };
@@ -60,6 +60,9 @@ const Login = ({ onLogin }) => {
                 <button type="submit">Login</button>
                 {error && <p className="error">{error}</p>}
             </form>
+            <div className="text-center mt-3">
+                <a href="./register">Don't have an account? Register here</a>
+            </div>
         </div>
     );
 };

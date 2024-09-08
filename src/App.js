@@ -1,21 +1,16 @@
-import React, { useState } from 'react';
-import Login from './Login'; // Adjust the path as necessary
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Login from './Login';
+import Register from './Register';
 
 const App = () => {
-    const [loggedIn, setLoggedIn] = useState(false);
-
-    const handleLogin = () => {
-        setLoggedIn(true);
-    };
-
     return (
-        <div>
-            {!loggedIn ? (
-                <Login onLogin={handleLogin} />
-            ) : (
-                <h2>Welcome! You are logged in.</h2>
-            )}
-        </div>
+        <Router>
+            <Routes>
+                <Route path="/" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+            </Routes>
+        </Router>
     );
 };
 

@@ -3,7 +3,7 @@ const oracledb = require('oracledb');
 const bcrypt = require('bcrypt');
 const router = express.Router();
 
-// Database configuration (import or define as needed)
+// Database configuration
 const dbConfig = {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
@@ -56,8 +56,8 @@ router.post('/register', async (req, res) => {
 
         // Insert the new user into the database
         const result = await connection.execute(
-            `INSERT INTO USER_ACC (USERNAME, PWORD, FNAME, LNAME, ACC_TYPE, AWARDNAME, PROGRAMME, STAFFROLE, DEPT) 
-            VALUES (:username, :pword, :fname, :lname, :accType, :awardname, :programme, :staffrole, :dept)`,
+            `INSERT INTO USER_ACC (USERNAME, PWORD, FNAME, LNAME, ACC_TYPE, AWARDNAME, PROGRAMME, STAFFROLE, DEPT)
+             VALUES (:username, :pword, :fname, :lname, :accType, :awardname, :programme, :staffrole, :dept)`,
             [username, hashedPassword, fname, lname, accType, awardname, programme, staffrole, dept],
             { autoCommit: true }
         );
@@ -81,19 +81,4 @@ router.post('/register', async (req, res) => {
         }
 
         res.status(201).json({ message: 'Registration successful' });
-    } catch (error) {
-        console.error('Error connecting to the database or registering user:', error);
-        res.status(500).json({ message: 'Database connection error or registration failed' });
-    } finally {
-        if (connection) {
-            try {
-                await connection.close();
-                console.log("Database connection closed.");
-            } catch (err) {
-                console.error('Error closing the database connection:', err);
-            }
-        }
     }
-});
-
-module.exports = router;
