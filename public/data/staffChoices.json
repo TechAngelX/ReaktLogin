@@ -1,0 +1,54 @@
+[
+  {
+    "STAFFROLEID": "AS001",
+    "STAFFROLENAME": "Academic Staff"
+  },
+  {
+    "STAFFROLEID": "PS001",
+    "STAFFROLENAME": "Professional Services"
+  },
+  {
+    "STAFFROLEID": "SS001",
+    "STAFFROLENAME": "Student Support Services"
+  },
+  {
+    "STAFFROLEID": "AE001",
+    "STAFFROLENAME": "Admissions and Enrolment"
+  },
+  {
+    "STAFFROLEID": "LS001",
+    "STAFFROLENAME": "Library Services"
+  },
+  {
+    "STAFFROLEID": "MC001",
+    "STAFFROLENAME": "Marketing and Communications"
+  },
+  {
+    "STAFFROLEID": "FE001",
+    "STAFFROLENAME": "Facilities and Estates"
+  },
+  {
+    "STAFFROLEID": "IT001",
+    "STAFFROLENAME": "IT Services"
+  },
+  {
+    "STAFFROLEID": "HR001",
+    "STAFFROLENAME": "Human Resources"
+  },
+  {
+    "STAFFROLEID": "FD001",
+    "STAFFROLENAME": "Finance Department"
+  },
+  {
+    "STAFFROLEID": "GA001",
+    "STAFFROLENAME": "General Administration"
+  },
+  {
+    "STAFFROLEID": "SM001",
+    "STAFFROLENAME": "Senior Management"
+  },
+  {
+    "STAFFROLEID": "EX001",
+    "STAFFROLENAME": "Executive Suite"
+  }
+]

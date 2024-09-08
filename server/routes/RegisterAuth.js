@@ -1,84 +1,134 @@
-const express = require('express');
-const oracledb = require('oracledb');
-const bcrypt = require('bcrypt');
-const router = express.Router();
+import React, { useState, useEffect } from 'react';
+import './App.css';
 
-// Database configuration
-const dbConfig = {
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    connectString: process.env.DB_CONNECT_STRING
-};
+function Register() {
+    const [awards, setAwards] = useState([]);
+    const [programmes, setProgrammes] = useState([]);
+    const [staffRoles, setStaffRoles] = useState([]);
+    const [departments, setDepartments] = useState([]);
+    const [selectedAward, setSelectedAward] = useState('');
+    const [selectedAccType, setSelectedAccType] = useState('');
 
-// Generate a unique username
-function generateAcctUsername(fname, lname) {
-    const firstInitial = fname ? fname.charAt(0).toLowerCase() : '';
-    const lastFour = lname.length >= 5 ? lname.substring(0, 5).toLowerCase() : lname.toLowerCase();
-    let randomNumbers;
-    do {
-        randomNumbers = String(Math.floor(Math.random() * 1000)).padStart(3, '0');
-    } while (randomNumbers.startsWith('1') || randomNumbers.startsWith('0'));
-    return firstInitial + lastFour + randomNumbers;
+    // Fetch data from JSON files
+    useEffect(() => {
+        fetch('/data/awards.json')
+            .then(response => response.json())
+            .then(data => setAwards(data));
+
+        fetch('/data/programmes.json')
+            .then(response => response.json())
+            .then(data => setProgrammes(data));
+
+        fetch('/data/staffRoles.json')
+            .then(response => response.json())
+            .then(data => setStaffRoles(data));
+
+        fetch('/data/departments.json')
+            .then(response => response.json())
+            .then(data => setDepartments(data));
+    }, []);
+
+    const handleAccTypeChange = (e) => {
+        setSelectedAccType(e.target.value);
+    };
+
+    const handleAwardChange = (e) => {
+        setSelectedAward(e.target.value);
+    };
+
+    return (
+        <div className="container form-container">
+            <div className="form-box">
+                <h1 className="text-center">Univ-DB</h1>
+                <form id="registrationForm">
+                    <h3 className="text-center">Registration</h3>
+                    <p className="text-center">Please complete the form to create an account</p>
+
+                    {/* Other form fields */}
+
+                    <div className="form-group">
+                        <label htmlFor="accType">Register as:</label>
+                        <select
+                            className="form-control"
+                            id="accType"
+                            name="accType"
+                            required
+                            onChange={handleAccTypeChange}
+                        >
+                            <option value="">Select User Type</option>
+                            <option value="1">Student</option>
+                            <option value="2">Staff</option>
+                        </select>
+                    </div>
+
+                    {selectedAccType === '1' && (
+                        <>
+                            <div className="form-group">
+                                <label htmlFor="award">Award:</label>
+                                <select
+                                    className="form-control"
+                                    id="award"
+                                    name="awardname"
+                                    onChange={handleAwardChange}
+                                >
+                                    <option value="">Select Award</option>
+                                    {awards.map((award, index) => (
+                                        <option key={index} value={award.AWARDNAME}>
+                                            {award.AWARDNAME}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="programme">Programme:</label>
+                                <select className="form-control" id="programme" name="programme">
+                                    <option value="">Select Programme</option>
+                                    {programmes
+                                        .filter(prog => prog.AWARDNAME === selectedAward)
+                                        .map(prog => (
+                                            <option key={prog.PROGID} value={prog.PROGID}>
+                                                {prog.PROGNAME}
+                                            </option>
+                                        ))}
+                                </select>
+                            </div>
+                        </>
+                    )}
+
+                    {selectedAccType === '2' && (
+                        <>
+                            <div className="form-group">
+                                <label htmlFor="staffrole">Staff Bole:</label>
+                                <select className="form-control" id="staffrole" name="staffrole">
+                                    <option value="">Select Role</option>
+                                    {staffRoles.map(role => (
+                                        <option key={role.STAFFROLEID} value={role.STAFFROLEID}>
+                                            {role.STAFFROLENAME}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="dept">DeFartment:</label>
+                                <select className="form-control" id="dept" name="dept">
+                                    <option value="">Select Department</option>
+                                    {departments.map(dept => (
+                                        <option key={dept.DEPTID} value={dept.DEPTID}>
+                                            {dept.DEPTNAME}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        </>
+                    )}
+
+                    <button type="submit" className="btn btn-primary btn-block">FUCKYAMAMARegister</button>
+                </form>
+            </div>
+        </div>
+    );
 }
 
-router.post('/register', async (req, res) => {
-    console.log("Received registration request:", req.body);
-
-    // Extract fields from the request body
-    const { fname, lname, pword, pwordConfirm, accType, awardname, programme, staffrole, dept } = req.body;
-
-    // Check if passwords match
-    if (pword !== pwordConfirm) {
-        return res.status(400).json({ message: 'Passwords do not match' });
-    }
-
-    let connection;
-
-    try {
-        connection = await oracledb.getConnection(dbConfig);
-        console.log("Successfully connected to the database with config:", dbConfig);
-
-        // Check if the username already exists
-        const username = generateAcctUsername(fname, lname);
-        const userCheck = await connection.execute(
-            `SELECT USERNAME FROM USER_ACC WHERE USERNAME = :username`,
-            [username],
-            { outFormat: oracledb.OUT_FORMAT_OBJECT }
-        );
-
-        if (userCheck.rows.length > 0) {
-            res.status(400).json({ message: 'Username already exists' });
-            return;
-        }
-
-        // Hash the password
-        const hashedPassword = await bcrypt.hash(pword, 10);
-
-        // Insert the new user into the database
-        const result = await connection.execute(
-            `INSERT INTO USER_ACC (USERNAME, PWORD, FNAME, LNAME, ACC_TYPE, AWARDNAME, PROGRAMME, STAFFROLE, DEPT)
-             VALUES (:username, :pword, :fname, :lname, :accType, :awardname, :programme, :staffrole, :dept)`,
-            [username, hashedPassword, fname, lname, accType, awardname, programme, staffrole, dept],
-            { autoCommit: true }
-        );
-
-        const userId = result.lastRowid; // Get the generated USERID
-
-        if (accType === '1') { // Student
-            await connection.execute(
-                `INSERT INTO STUDENT (STUDENTID, FNAME, LNAME, EMAIL, PROGID, DEGREETYPEID, STUDYLEVELID, DEPTID, AWARDNAME, USERID) 
-                VALUES (TO_NUMBER('2' || student_id_seq.NEXTVAL), :fname, :lname, :email, :progId, :degreeTypeId, :studyLevelId, :deptId, :awardName, :userId)`,
-                [fname, lname, username + '@std.techangelx.ac.uk', programme, /* degreeTypeId */, /* studyLevelId */, /* deptId */, awardname, userId],
-                { autoCommit: true }
-            );
-        } else if (accType === '2') { // Staff
-            await connection.execute(
-                `INSERT INTO STAFF (STAFFID, STAFFROLEID, EMAIL, FNAME, LNAME, DEPTID, USERID) 
-                VALUES (generate_staff_id(:fname, :lname), :staffRoleId, :email, :fname, :lname, :deptId, :userId)`,
-                [staffrole, username + '@techangelx.ac.uk', fname, lname, dept, userId],
-                { autoCommit: true }
-            );
-        }
-
-        res.status(201).json({ message: 'Registration successful' });
-    }
+export default Register;
