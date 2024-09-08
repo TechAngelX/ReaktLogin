@@ -40,9 +40,9 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes
-app.use('/api/login', require('./routes/login'));
-app.use('/api/register', require('./routes/register'));
-app.use('/api/data', require('./routes/data'));
+app.use('/api/login', require('./routes/LoginAuth'));
+app.use('/api/register', require('./routes/RegisterAuth'));
+app.use('/api/data', require('./routes/DataAuth'));
 
 // Catch-all handler for any request that doesn't match the above routes
 app.get('*', (req, res) => {
