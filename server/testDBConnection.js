@@ -1,5 +1,4 @@
 const oracledb = require('oracledb');
-const path = require('path');
 const fs = require('fs');
 const configPath = require('../config/configPath'); // Import the configPath module
 
@@ -21,7 +20,6 @@ async function testDBConnection() {
         connectString: process.env.DB_CONNECT_STRING
     };
 
-
     try {
         connection = await oracledb.getConnection(dbConfig);
         console.log("Env file path: " + envFilePath);
@@ -32,9 +30,21 @@ async function testDBConnection() {
 
         console.log("\nSuccessfully connected to the database!".toUpperCase());
 
+        // Generate a random color
+        const randomColor = `#${Math.floor(Math.random()*16777215).toString(16)}`;
 
+        // Insert a new record with a random color
+        const insertQuery = `
+            INSERT INTO UPDATEME (favecolour)
+            VALUES (:favecolour)
+        `;
+        await connection.execute(
+            insertQuery,
+            [randomColor],
+            { autoCommit: true }
+        );
 
-        // Your database operations here
+        console.log(`Inserted new record with color: ${randomColor}`);
 
     } catch (err) {
         console.error("Error connecting to the database:", err);
