@@ -43,18 +43,42 @@ const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // Form submission logic here
-        console.log({
+
+        // Form data to send
+        const data = {
             fname,
             lname,
             pword,
+            pwordConfirm,
             accType,
             awardname,
             programme,
             staffrole,
             dept,
-        });
+        };
+
+        try {
+            const response = await fetch('http://localhost:5503/api/register', {  // Adjust the path if necessary
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+            console.log('Server response:', result);
+
+            if (response.ok) {
+                alert('Registration successful!');
+                // Optionally, redirect to another page or clear the form
+            } else {
+                alert(result.message || 'Registration failed');
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            alert('An error occurred');
+        }
     };
+
 
     const handleAccTypeChange = (e) => {
         setSelectedAccType(e.target.value);
